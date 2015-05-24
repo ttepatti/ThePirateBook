@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
@@ -387,6 +386,11 @@ public class Piratebook extends javax.swing.JFrame {
         filePoint = f.getAbsolutePath();
         testField.setText(filePoint);
 
+        try {
+            sendFile(f);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }//GEN-LAST:event_UploadButtonActionPerformed
 
     public void addUploader() {
@@ -429,27 +433,27 @@ public class Piratebook extends javax.swing.JFrame {
 
     }
 
-    private static void sendMessage(HtmlPage messagePage, String message) throws Exception {
+    private static void sendMessage(String message) throws Exception {
         System.out.println("Sent a message");
         //messagePage.getElementByName("message_body").setAttribute("value", message);
-        messagePage.executeJavaScript("document.getElementsByName('message_body')[0].value = '" + message + "'").getJavaScriptResult();
+        Login.messagePage.executeJavaScript("document.getElementsByName('message_body')[0].value = '" + message + "'").getJavaScriptResult();
 
-        messagePage.executeJavaScript("document.getElementsByClassName('_5f0v')[3].click()");
+        Login.messagePage.executeJavaScript("document.getElementsByClassName('_5f0v')[3].click()");
 
         Thread.sleep(10000);
     }
 
-    private static void sendMessages(HtmlPage messagePage, String[] messages) throws Exception {
+    private static void sendMessages(String[] messages) throws Exception {
         for (String s : messages) {
-            sendMessage(messagePage, s);
+            sendMessage(s);
         }
     }
 
-    private static void sendFile(HtmlPage messagePage, File file) throws Exception {
+    private static void sendFile(File file) throws Exception {
         String[] strings = base64Functions.encodeAndSplit.intoStrings(file);
-        sendMessage(messagePage, "BEGIN FILE " + file.getName() + " " + strings.length + " messages incoming");
-        sendMessages(messagePage, strings);
-        sendMessage(messagePage, "END FILE " + file.getName());
+        sendMessage("BEGIN FILE " + file.getName() + " " + strings.length + " messages incoming");
+        sendMessages(strings);
+        sendMessage("END FILE " + file.getName());
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

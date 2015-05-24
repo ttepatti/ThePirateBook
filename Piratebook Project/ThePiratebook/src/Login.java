@@ -25,7 +25,7 @@ public class Login extends javax.swing.JFrame {
 
     public static boolean loggedIn;
 
-    private static HtmlPage messagePage;
+    public static HtmlPage messagePage;
 
     /**
      * Creates new form PiratebookLogin
