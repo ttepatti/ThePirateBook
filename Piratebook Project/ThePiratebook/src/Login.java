@@ -224,7 +224,8 @@ public class Login extends javax.swing.JFrame {
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
 
         try {
-            loggedIn = login(emailbox.getText(), passbox.getText());//todo indicate that stuff is happening
+            loggedIn = login(emailbox.getText(), passbox.getText()); //todo indicate that stuff is happening
+            System.out.println(loggedIn);
             checkLogin();
             //loggedIn = true;
         } catch (Exception ex) {
@@ -239,7 +240,9 @@ public class Login extends javax.swing.JFrame {
                 }
             });
             this.dispose();
-        }//todo if not logged in tell the user they are dumb
+        } else {
+            //todo if not logged in tell the user they are dumb
+        }
     }
 
     //swage@cock.li
@@ -251,7 +254,7 @@ public class Login extends javax.swing.JFrame {
         java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(java.util.logging.Level.OFF);
         java.util.logging.Logger.getLogger("org.apache").setLevel(java.util.logging.Level.OFF);
 
-        String profileurl = ""; // Used for storing the user's profile URL //
+        String profileurl = null; // Used for storing the user's profile URL //
         String filePart = "test"; // Used for storing the message that's sent //
 
         // First we make a new webclient for doing all this crap
@@ -290,18 +293,7 @@ public class Login extends javax.swing.JFrame {
             }
         }
 
-        profileurl = profileurl.replace("https://www.facebook.com/", "");
-        log.log(Level.INFO, "profileurl = {0}", profileurl);
-
-        if (profileurl == null) {
-
-            return false;
-        }
-
-        messagePage = webClient.getPage("https://www.facebook.com/messages/" + profileurl);
-        log.log(Level.INFO, "LOGIN SUCCESS");
-        return true;
-        //sendFile(messagePage, new File("memes.jpg"));
+        return profileurl != null;
     }
 
     private void emailboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailboxActionPerformed
