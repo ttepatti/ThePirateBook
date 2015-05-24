@@ -3,8 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package facebookmessing;
-
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -24,7 +22,7 @@ import net.lingala.zip4j.util.Zip4jConstants;
  *
  * @author Deliquescence <Deliquescence1@gmail.com>
  */
-public class Base64Functions {
+public class base64Functions {
 
     public static final int SPLIT_SIZE = 20000; //The Facebook messenger character limit is 20,000
 
@@ -114,7 +112,7 @@ public class Base64Functions {
         //convert to bytes
         fis.read(mybytes);
 
-        return Base64Functions.base64encode(mybytes);
+        return base64encode(mybytes);
     }
 
     /**
