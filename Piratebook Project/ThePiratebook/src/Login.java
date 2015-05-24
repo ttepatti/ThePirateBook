@@ -14,6 +14,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -243,7 +244,7 @@ public class Login extends javax.swing.JFrame {
             });
             this.dispose();
         } else {
-            //todo if not logged in tell the user they are dumb
+            JOptionPane.showMessageDialog(this, "login bad.");
         }
     }
 
@@ -294,6 +295,9 @@ public class Login extends javax.swing.JFrame {
                 profileurl = element.getAttribute("href");
             }
         }
+        profileurl = profileurl.replace("https://www.facebook.com/", "");
+        log.log(Level.INFO, "profileurl = {0}", profileurl);
+        messagePage = webClient.getPage("https://www.facebook.com/messages/" + profileurl);
 
         return profileurl != null;
     }

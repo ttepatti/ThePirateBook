@@ -6,6 +6,7 @@
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 /**
  * Sizes: jpanel1: 620,277
@@ -388,6 +389,7 @@ public class Piratebook extends javax.swing.JFrame {
 
         try {
             sendFile(f);
+            JOptionPane.showMessageDialog(this, "Upload Finished");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -454,6 +456,7 @@ public class Piratebook extends javax.swing.JFrame {
         sendMessage("BEGIN FILE " + file.getName() + " " + strings.length + " messages incoming");
         sendMessages(strings);
         sendMessage("END FILE " + file.getName());
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
