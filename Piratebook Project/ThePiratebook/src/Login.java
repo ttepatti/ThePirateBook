@@ -3,9 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 import com.gargoylesoftware.htmlunit.BrowserVersion;
-import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
@@ -13,26 +11,24 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
-import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.io.IOException;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
+
 /**
  *
  * @author Shane
  */
-public class PiratebookLogin extends javax.swing.JFrame {
-    
-    private final String STOCK_PASSWORD="Stock";
+public class Login extends javax.swing.JFrame {
+
+    private final String STOCK_PASSWORD = "Stock";
+
+    public static boolean loggedIn;
+
+    private static HtmlPage messagePage;
+
     /**
      * Creates new form PiratebookLogin
      */
-    public PiratebookLogin() {
+    public Login() {
         initComponents();
     }
 
@@ -221,84 +217,78 @@ public class PiratebookLogin extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
-          try {                                            
-            String email = emailbox.getText();
-            String pass = passbox.getText();// TODO add your handling code here:
-            /* turn off annoying htmlunit warnings */
-            java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(java.util.logging.Level.OFF);
-            java.util.logging.Logger.getLogger("org.apache").setLevel(java.util.logging.Level.OFF);
-            
-            String profileurl = ""; // Used for storing the user's profile URL //
-            String filePart = "test"; // Used for storing the message that's sent //
-            
-            // First we make a new webclient for doing all this crap
-            WebClient webClient = new WebClient(BrowserVersion.CHROME);
-            webClient.getOptions().setThrowExceptionOnScriptError(false);
-            
-            // Grab the login page
-            HtmlPage loginPage = webClient.getPage("https://www.facebook.com/login.php");
-            
-            List<HtmlForm> loginForms; // Initialize an array to store login forms //
-            loginForms = loginPage.getForms(); /* This is a ghetto way of getting the login form,
-            * because HtmlUnit doesn't support grabbing by id */
-            HtmlForm login = loginForms.get(0);
-            
-            HtmlSubmitInput loginButton = login.getInputByName("login"); // Find the login button //
-            HtmlTextInput emailField = login.getInputByName("email"); // Get the field for submitting email //
-            HtmlPasswordInput passwordField = login.getInputByName("pass"); // Get the field for submitting password //
-            
-            // Set the values of the username and password //
-            emailField.setValueAttribute(email);
-            passwordField.setValueAttribute(pass);
-            
-            // Now submit the form by clicking the button and get back the newsfeed. //
-            HtmlPage newsfeed = null;
-            try {
-                newsfeed = loginButton.click();
-            } catch (IOException ex) {
-                Logger.getLogger(PiratebookLogin.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            // Now we're going to grab the current user's profile URL to get their messages with themself
-            List<DomElement> links = newsfeed.getElementsByTagName("a");
-            for (DomElement element : links) {
-                if (element.getAttribute("class").equals("fbxWelcomeBoxName")) {
-                    profileurl = element.getAttribute("href");
-                }
-            }
-            
-            profileurl = profileurl.replace("https://www.facebook.com/", "");
-            
-            if(profileurl != null) {
-                Piratebook mainUI=new Piratebook();
-                mainUI.setVisible(true);
-                this.setVisible(false);
-            }
-            
-            
-            HtmlPage messagePage = null;
-            try {
-                messagePage = webClient.getPage("https://www.facebook.com/messages/" + profileurl);
-            } catch (IOException ex) {
-                Logger.getLogger(PiratebookLogin.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (FailingHttpStatusCodeException ex) {
-                Logger.getLogger(PiratebookLogin.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            messagePage.executeJavaScript("document.getElementsByName('message_body')[0].value = 'test2'");
-            
-            messagePage.executeJavaScript("document.getElementsByClassName('_5f0v')[3].click()");
-            
-            
-        } catch (IOException ex) {
-            Logger.getLogger(PiratebookLogin.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (FailingHttpStatusCodeException ex) {
-            Logger.getLogger(PiratebookLogin.class.getName()).log(Level.SEVERE, null, ex);
+
+        try {
+            //login(emailbox.getText(), passbox.getText());
+            loggedIn = true;
+        } catch (Exception ex) {
         }
- 
-       System.out.println("yolo");
-        
+        if (loggedIn) {
+            java.awt.EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    new Piratebook().setVisible(true);
+                }
+            });
+            this.dispose();
+        }//todo if not logged in tell the user they are dumb
     }//GEN-LAST:event_loginButtonActionPerformed
+
+    //swage@cock.li
+    //password101
+    public static boolean login(String email, String pass) throws Exception {
+
+        /* turn off annoying htmlunit warnings */
+        java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(java.util.logging.Level.OFF);
+        java.util.logging.Logger.getLogger("org.apache").setLevel(java.util.logging.Level.OFF);
+
+        String profileurl = ""; // Used for storing the user's profile URL //
+        String filePart = "test"; // Used for storing the message that's sent //
+
+        // First we make a new webclient for doing all this crap
+        WebClient webClient = new WebClient(BrowserVersion.FIREFOX_31);
+        webClient.getOptions().setThrowExceptionOnScriptError(false);
+        webClient.getOptions().setTimeout(1000);
+
+        // Grab the login page
+        HtmlPage loginPage = webClient.getPage("https://www.facebook.com/login.php");
+
+        List<HtmlForm> loginForms; // Initialize an array to store login forms //
+        loginForms = loginPage.getForms(); /* This is a ghetto way of getting the login form,
+         * because HtmlUnit doesn't support grabbing by id */
+
+        HtmlForm login = loginForms.get(0);
+
+        HtmlSubmitInput loginButton = login.getInputByName("login"); // Find the login button //
+        HtmlTextInput emailField = login.getInputByName("email"); // Get the field for submitting email //
+        HtmlPasswordInput passwordField = login.getInputByName("pass"); // Get the field for submitting password //
+
+        // Set the values of the username and password //
+        emailField.setValueAttribute(email);
+        passwordField.setValueAttribute(pass);
+
+        // Now submit the form by clicking the button and get back the newsfeed. //
+        HtmlPage newsfeed = loginButton.click();
+
+        // Now we're going to grab the current user's profile URL to get their messages with themself
+        List<DomElement> links = newsfeed.getElementsByTagName("a");
+        for (DomElement element : links) {
+            if (element.getAttribute("class").equals("fbxWelcomeBoxName")) {
+                profileurl = element.getAttribute("href");
+            }
+        }
+
+        profileurl = profileurl.replace("https://www.facebook.com/", "");
+
+        if (profileurl == null) {
+            loggedIn = false;
+            return false;
+        }
+
+        messagePage = webClient.getPage("https://www.facebook.com/messages/" + profileurl);
+
+        return true;
+        //sendFile(messagePage, new File("memes.jpg"));
+    }
 
     private void emailboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailboxActionPerformed
         // TODO add your handling code here:
@@ -315,44 +305,6 @@ public class PiratebookLogin extends javax.swing.JFrame {
     private void loginButtonKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_loginButtonKeyTyped
         // TODO add your handling code here:
     }//GEN-LAST:event_loginButtonKeyTyped
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PiratebookLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PiratebookLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PiratebookLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PiratebookLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new PiratebookLogin().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField emailbox;

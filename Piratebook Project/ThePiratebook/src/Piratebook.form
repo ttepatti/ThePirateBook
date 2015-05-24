@@ -93,6 +93,7 @@
       <SubComponents>
         <Component class="javax.swing.JTextField" name="jTextField1">
           <Properties>
+            <Property name="editable" type="boolean" value="false"/>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="94" green="5c" red="3f" type="rgb"/>
             </Property>
@@ -236,6 +237,7 @@
           <SubComponents>
             <Component class="javax.swing.JTextField" name="FnameTitle">
               <Properties>
+                <Property name="editable" type="boolean" value="false"/>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="94" green="5c" red="3f" type="rgb"/>
                 </Property>
@@ -258,6 +260,7 @@
             </Component>
             <Component class="javax.swing.JTextField" name="OwnerTitle">
               <Properties>
+                <Property name="editable" type="boolean" value="false"/>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="94" green="5c" red="3f" type="rgb"/>
                 </Property>
@@ -302,6 +305,7 @@
             </Component>
             <Component class="javax.swing.JTextField" name="OwnerTitle1">
               <Properties>
+                <Property name="editable" type="boolean" value="false"/>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="94" green="5c" red="3f" type="rgb"/>
                 </Property>
@@ -335,6 +339,7 @@
             </Component>
             <Component class="javax.swing.JTextField" name="OwnerTitle2">
               <Properties>
+                <Property name="editable" type="boolean" value="false"/>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="94" green="5c" red="3f" type="rgb"/>
                 </Property>
@@ -368,6 +373,7 @@
             </Component>
             <Component class="javax.swing.JTextField" name="OwnerTitle3">
               <Properties>
+                <Property name="editable" type="boolean" value="false"/>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="94" green="5c" red="3f" type="rgb"/>
                 </Property>

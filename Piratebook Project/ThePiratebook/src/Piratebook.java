@@ -3,19 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import java.io.File;
-import javax.swing.*;
 import java.util.ArrayList;
-/**
- * The separators and panels create a sort of table. Add an ArrayList of text fields/progress bars
- * to the panels. Then as files are added to an upload/download queue, add each
- * text field/progress bar to the ArrayList at runtime.
- */
+import javax.swing.JFileChooser;
 
 /**
  * Sizes: jpanel1: 620,277
- * 
+ *
  */
 public class Piratebook extends javax.swing.JFrame {
 
@@ -62,6 +57,7 @@ public class Piratebook extends javax.swing.JFrame {
         jPanel2.setBackground(new java.awt.Color(63, 92, 148));
         jPanel2.setName("Backg"); // NOI18N
 
+        jTextField1.setEditable(false);
         jTextField1.setBackground(new java.awt.Color(63, 92, 148));
         jTextField1.setFont(new java.awt.Font("Trebuchet MS", 0, 36)); // NOI18N
         jTextField1.setForeground(new java.awt.Color(255, 255, 255));
@@ -78,6 +74,7 @@ public class Piratebook extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(63, 92, 148));
         jPanel1.setBorder(javax.swing.BorderFactory.createMatteBorder(6, 6, 6, 6, new java.awt.Color(245, 120, 0)));
 
+        FnameTitle.setEditable(false);
         FnameTitle.setBackground(new java.awt.Color(63, 92, 148));
         FnameTitle.setFont(new java.awt.Font("Berlin Sans FB", 0, 16)); // NOI18N
         FnameTitle.setForeground(new java.awt.Color(255, 255, 255));
@@ -91,6 +88,7 @@ public class Piratebook extends javax.swing.JFrame {
             }
         });
 
+        OwnerTitle.setEditable(false);
         OwnerTitle.setBackground(new java.awt.Color(63, 92, 148));
         OwnerTitle.setFont(new java.awt.Font("Trebuchet MS", 0, 16)); // NOI18N
         OwnerTitle.setForeground(new java.awt.Color(255, 255, 255));
@@ -112,6 +110,7 @@ public class Piratebook extends javax.swing.JFrame {
         jSeparator3.setForeground(new java.awt.Color(245, 120, 0));
         jSeparator3.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
+        OwnerTitle1.setEditable(false);
         OwnerTitle1.setBackground(new java.awt.Color(63, 92, 148));
         OwnerTitle1.setFont(new java.awt.Font("Trebuchet MS", 0, 16)); // NOI18N
         OwnerTitle1.setForeground(new java.awt.Color(255, 255, 255));
@@ -129,6 +128,7 @@ public class Piratebook extends javax.swing.JFrame {
         jSeparator1.setForeground(new java.awt.Color(245, 120, 0));
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
+        OwnerTitle2.setEditable(false);
         OwnerTitle2.setBackground(new java.awt.Color(63, 92, 148));
         OwnerTitle2.setFont(new java.awt.Font("Trebuchet MS", 0, 16)); // NOI18N
         OwnerTitle2.setForeground(new java.awt.Color(255, 255, 255));
@@ -146,6 +146,7 @@ public class Piratebook extends javax.swing.JFrame {
         jSeparator5.setForeground(new java.awt.Color(245, 120, 0));
         jSeparator5.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
+        OwnerTitle3.setEditable(false);
         OwnerTitle3.setBackground(new java.awt.Color(63, 92, 148));
         OwnerTitle3.setFont(new java.awt.Font("Trebuchet MS", 0, 16)); // NOI18N
         OwnerTitle3.setForeground(new java.awt.Color(255, 255, 255));
@@ -380,18 +381,18 @@ public class Piratebook extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         String filePoint;
-        JFileChooser choos=new JFileChooser();
+        JFileChooser choos = new JFileChooser();
         choos.showOpenDialog(null);
-        File f=choos.getSelectedFile();
-        filePoint=f.getAbsolutePath();
+        File f = choos.getSelectedFile();
+        filePoint = f.getAbsolutePath();
         testField.setText(filePoint);
-        
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    public void addUploader()
-    {
-        
+    public void addUploader() {
+
     }
+
     /**
      * @param args the command line arguments
      */
@@ -399,7 +400,7 @@ public class Piratebook extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -418,18 +419,37 @@ public class Piratebook extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(Piratebook.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Piratebook().setVisible(true);
+                new Login().setVisible(true);
             }
         });
-        
-        
+
+    }
+
+    private static void sendMessage(HtmlPage messagePage, String message) throws Exception {
+        System.out.println("Sent a message");
+        //messagePage.getElementByName("message_body").setAttribute("value", message);
+        messagePage.executeJavaScript("document.getElementsByName('message_body')[0].value = '" + message + "'").getJavaScriptResult();
+
+        messagePage.executeJavaScript("document.getElementsByClassName('_5f0v')[3].click()");
+
+        Thread.sleep(10000);
+    }
+
+    private static void sendMessages(HtmlPage messagePage, String[] messages) throws Exception {
+        for (String s : messages) {
+            sendMessage(messagePage, s);
+        }
+    }
+
+    private static void sendFile(HtmlPage messagePage, File file) throws Exception {
+        String[] strings = base64Functions.encodeAndSplit.intoStrings(file);
+        sendMessage(messagePage, "BEGIN FILE " + file.getName() + " " + strings.length + " messages incoming");
+        sendMessages(messagePage, strings);
+        sendMessage(messagePage, "END FILE " + file.getName());
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

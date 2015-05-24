@@ -26,30 +26,29 @@ public class base64Functions {
 
     public static final int SPLIT_SIZE = 20000; //The Facebook messenger character limit is 20,000
 
-    /**
-     * Class with all the base64 code to make things work
-     */
-    public static void main(String[] args) throws FileNotFoundException, IOException, ZipException {
-
-        //Example Usages
-        //Example 1a: Encode one file into files of base 64
-        encodeAndSplit.intoFiles(new File("memes.jpg"));
-        //Example 1b: Decode file parts into one file
-        unSplitAndDecode.filesIntoFile("memesDecoded.jpg");
-
-        //Example 2a: Zip one file and encode into files of base 64
-        encodeAndSplit.intoFiles(createZip(new File("memes.jpg"), "memes.zip").getFile());
-        //Example 2b: Decode file parts into file
-        unSplitAndDecode.filesIntoFile("memes decoded.zip");
-
-        //Example 3a: Encode one file into bytes[][]
-        byte[][] data = encodeAndSplit.fileIntoBytePieces(new File("memes.jpg"));
-        //Example 3b: Change bytes[][] into string[]
-        String[] textualData = util.convertBytePiecesToStrings(data);
-        //Example 3c: Decode bytes[][] into file
-        unSplitAndDecode.bytePeicesIntoFile(data, "memesDecoded.jpg");
-    }
-
+//    /**
+//     * Class with all the base64 code to make things work
+//     */
+//    public static void main(String[] args) throws FileNotFoundException, IOException, ZipException {
+//
+//        //Example Usages
+//        //Example 1a: Encode one file into files of base 64
+//        encodeAndSplit.intoFiles(new File("memes.jpg"));
+//        //Example 1b: Decode file parts into one file
+//        unSplitAndDecode.filesIntoFile("memesDecoded.jpg");
+//
+//        //Example 2a: Zip one file and encode into files of base 64
+//        encodeAndSplit.intoFiles(createZip(new File("memes.jpg"), "memes.zip").getFile());
+//        //Example 2b: Decode file parts into file
+//        unSplitAndDecode.filesIntoFile("memes decoded.zip");
+//
+//        //Example 3a: Encode one file into bytes[][]
+//        byte[][] data = encodeAndSplit.fileIntoBytePieces(new File("memes.jpg"));
+//        //Example 3b: Change bytes[][] into string[]
+//        String[] textualData = util.convertBytePiecesToStrings(data);
+//        //Example 3c: Decode bytes[][] into file
+//        unSplitAndDecode.bytePeicesIntoFile(data, "memesDecoded.jpg");
+//    }
     /**
      * Create a zip out of multiple files
      *
