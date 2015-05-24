@@ -60,7 +60,10 @@
                           <Component id="testField" min="-2" pref="164" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="52" max="-2" attributes="0"/>
                           <Component id="jTextField1" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="profileURLtext" max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="profileUrlButton" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -80,6 +83,13 @@
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="UploadButton" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="testField" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="profileURLtext" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="profileUrlButton" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -489,6 +499,19 @@
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="profileURLtext">
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="profileURLtextActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="profileUrlButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Set profile URL"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="profileUrlButtonActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

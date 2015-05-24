@@ -4,7 +4,10 @@
  * and open the template in the editor.
  */
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
@@ -51,6 +54,8 @@ public class Piratebook extends javax.swing.JFrame {
         jPanel8 = new javax.swing.JPanel();
         UploadButton = new javax.swing.JButton();
         testField = new javax.swing.JTextField();
+        profileURLtext = new javax.swing.JTextField();
+        profileUrlButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -307,6 +312,19 @@ public class Piratebook extends javax.swing.JFrame {
 
         testField.setEditable(false);
 
+        profileURLtext.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                profileURLtextActionPerformed(evt);
+            }
+        });
+
+        profileUrlButton.setText("Set profile URL");
+        profileUrlButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                profileUrlButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -321,7 +339,10 @@ public class Piratebook extends javax.swing.JFrame {
                         .addComponent(testField, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(52, 52, 52)
                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(profileURLtext)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(profileUrlButton)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -335,7 +356,12 @@ public class Piratebook extends javax.swing.JFrame {
                         .addContainerGap()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(UploadButton)
-                            .addComponent(testField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(testField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(profileURLtext, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(profileUrlButton))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 17, Short.MAX_VALUE))
@@ -380,6 +406,7 @@ public class Piratebook extends javax.swing.JFrame {
     }//GEN-LAST:event_FnameTitleActionPerformed
 
     private void UploadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UploadButtonActionPerformed
+        profileURLtext.setText(Login.getProfileUrl());
         String filePoint;
         JFileChooser chooser = new JFileChooser();
         chooser.showOpenDialog(null);
@@ -394,6 +421,18 @@ public class Piratebook extends javax.swing.JFrame {
             ex.printStackTrace();
         }
     }//GEN-LAST:event_UploadButtonActionPerformed
+
+    private void profileURLtextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_profileURLtextActionPerformed
+
+    }//GEN-LAST:event_profileURLtextActionPerformed
+
+    private void profileUrlButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_profileUrlButtonActionPerformed
+        try {
+            Login.setMessagePage(profileURLtext.getText());
+        } catch (IOException ex) {
+            Logger.getLogger(Piratebook.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_profileUrlButtonActionPerformed
 
     public void addUploader() {
 
@@ -480,6 +519,8 @@ public class Piratebook extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSeparator jSeparator5;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField profileURLtext;
+    private javax.swing.JButton profileUrlButton;
     private javax.swing.JTextField testField;
     // End of variables declaration//GEN-END:variables
     private ArrayList<javax.swing.JTextField> allNames;

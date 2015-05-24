@@ -11,6 +11,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
+import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,6 +28,8 @@ public class Login extends javax.swing.JFrame {
     public static boolean loggedIn;
 
     public static HtmlPage messagePage;
+    private static WebClient webClient;
+    private static String profileUrl;
 
     /**
      * Creates new form PiratebookLogin
@@ -257,11 +260,11 @@ public class Login extends javax.swing.JFrame {
         java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(java.util.logging.Level.OFF);
         java.util.logging.Logger.getLogger("org.apache").setLevel(java.util.logging.Level.OFF);
 
-        String profileurl = null; // Used for storing the user's profile URL //
+        profileUrl = null; // Used for storing the user's profile URL //
         String filePart = "test"; // Used for storing the message that's sent //
 
         // First we make a new webclient for doing all this crap
-        WebClient webClient = new WebClient(BrowserVersion.FIREFOX_31);
+        webClient = new WebClient(BrowserVersion.FIREFOX_31);
         webClient.getOptions().setThrowExceptionOnScriptError(false);
         // webClient.getOptions().setTimeout(1000);
         log.log(Level.FINE, "WebClient Created");
@@ -292,14 +295,22 @@ public class Login extends javax.swing.JFrame {
         List<DomElement> links = newsfeed.getElementsByTagName("a");
         for (DomElement element : links) {
             if (element.getAttribute("class").equals("fbxWelcomeBoxName")) {
-                profileurl = element.getAttribute("href");
+                profileUrl = element.getAttribute("href");
             }
         }
-        profileurl = profileurl.replace("https://www.facebook.com/", "");
-        log.log(Level.INFO, "profileurl = {0}", profileurl);
-        messagePage = webClient.getPage("https://www.facebook.com/messages/" + profileurl);
+        profileUrl = profileUrl.replace("https://www.facebook.com/", "");
+        log.log(Level.INFO, "profileurl = {0}", profileUrl);
+        messagePage = webClient.getPage("https://www.facebook.com/messages/" + profileUrl);
 
-        return profileurl != null;
+        return profileUrl != null;
+    }
+
+    public static void setMessagePage(String profileUrl) throws IOException {
+        messagePage = webClient.getPage("https://www.facebook.com/messages/" + profileUrl);
+    }
+
+    public static String getProfileUrl() {
+        return profileUrl;
     }
 
     private void emailboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailboxActionPerformed
