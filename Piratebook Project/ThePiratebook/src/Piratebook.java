@@ -49,7 +49,7 @@ public class Piratebook extends javax.swing.JFrame {
         jPanel5 = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        UploadButton = new javax.swing.JButton();
         testField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -296,16 +296,16 @@ public class Piratebook extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jButton1.setBackground(new java.awt.Color(245, 120, 0));
-        jButton1.setFont(new java.awt.Font("Trebuchet MS", 0, 11)); // NOI18N
-        jButton1.setText("Upload New File");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        UploadButton.setBackground(new java.awt.Color(245, 120, 0));
+        UploadButton.setFont(new java.awt.Font("Trebuchet MS", 0, 11)); // NOI18N
+        UploadButton.setText("Upload New File");
+        UploadButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                UploadButtonActionPerformed(evt);
             }
         });
 
-        testField.setText("test-field");
+        testField.setEditable(false);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -316,10 +316,10 @@ public class Piratebook extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jButton1)
-                        .addGap(45, 45, 45)
-                        .addComponent(testField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(159, 159, 159)
+                        .addComponent(UploadButton)
+                        .addGap(37, 37, 37)
+                        .addComponent(testField, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(52, 52, 52)
                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -334,7 +334,7 @@ public class Piratebook extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton1)
+                            .addComponent(UploadButton)
                             .addComponent(testField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -379,15 +379,15 @@ public class Piratebook extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_FnameTitleActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void UploadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UploadButtonActionPerformed
         String filePoint;
-        JFileChooser choos = new JFileChooser();
-        choos.showOpenDialog(null);
-        File f = choos.getSelectedFile();
+        JFileChooser chooser = new JFileChooser();
+        chooser.showOpenDialog(null);
+        File f = chooser.getSelectedFile();
         filePoint = f.getAbsolutePath();
         testField.setText(filePoint);
 
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_UploadButtonActionPerformed
 
     public void addUploader() {
 
@@ -458,7 +458,7 @@ public class Piratebook extends javax.swing.JFrame {
     private javax.swing.JTextField OwnerTitle1;
     private javax.swing.JTextField OwnerTitle2;
     private javax.swing.JTextField OwnerTitle3;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton UploadButton;
     private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;

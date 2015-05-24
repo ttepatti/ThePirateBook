@@ -12,6 +12,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -67,6 +69,7 @@ public class Login extends javax.swing.JFrame {
         jSeparator1.setForeground(new java.awt.Color(245, 120, 0));
 
         passbox.setForeground(new java.awt.Color(245, 120, 0));
+        passbox.setText("password101");
         passbox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 passboxActionPerformed(evt);
@@ -79,6 +82,8 @@ public class Login extends javax.swing.JFrame {
         });
 
         emailbox.setForeground(new java.awt.Color(245, 120, 0));
+        emailbox.setText("swage@cock.li");
+        emailbox.setName(""); // NOI18N
         emailbox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 emailboxActionPerformed(evt);
@@ -219,10 +224,14 @@ public class Login extends javax.swing.JFrame {
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
 
         try {
-            //login(emailbox.getText(), passbox.getText());
-            loggedIn = true;
+            loggedIn = login(emailbox.getText(), passbox.getText());//todo indicate that stuff is happening
+            checkLogin();
+            //loggedIn = true;
         } catch (Exception ex) {
         }
+    }//GEN-LAST:event_loginButtonActionPerformed
+
+    private void checkLogin() {
         if (loggedIn) {
             java.awt.EventQueue.invokeLater(new Runnable() {
                 public void run() {
@@ -231,11 +240,12 @@ public class Login extends javax.swing.JFrame {
             });
             this.dispose();
         }//todo if not logged in tell the user they are dumb
-    }//GEN-LAST:event_loginButtonActionPerformed
+    }
 
     //swage@cock.li
     //password101
     public static boolean login(String email, String pass) throws Exception {
+        Logger log = java.util.logging.Logger.getLogger("FacebookLogin");
 
         /* turn off annoying htmlunit warnings */
         java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(java.util.logging.Level.OFF);
@@ -247,10 +257,12 @@ public class Login extends javax.swing.JFrame {
         // First we make a new webclient for doing all this crap
         WebClient webClient = new WebClient(BrowserVersion.FIREFOX_31);
         webClient.getOptions().setThrowExceptionOnScriptError(false);
-        webClient.getOptions().setTimeout(1000);
+        // webClient.getOptions().setTimeout(1000);
+        log.log(Level.FINE, "WebClient Created");
 
         // Grab the login page
         HtmlPage loginPage = webClient.getPage("https://www.facebook.com/login.php");
+        log.log(Level.FINE, "login page got");
 
         List<HtmlForm> loginForms; // Initialize an array to store login forms //
         loginForms = loginPage.getForms(); /* This is a ghetto way of getting the login form,
@@ -268,6 +280,7 @@ public class Login extends javax.swing.JFrame {
 
         // Now submit the form by clicking the button and get back the newsfeed. //
         HtmlPage newsfeed = loginButton.click();
+        log.log(Level.FINE, "loginButton.click()");
 
         // Now we're going to grab the current user's profile URL to get their messages with themself
         List<DomElement> links = newsfeed.getElementsByTagName("a");
@@ -278,14 +291,15 @@ public class Login extends javax.swing.JFrame {
         }
 
         profileurl = profileurl.replace("https://www.facebook.com/", "");
+        log.log(Level.INFO, "profileurl = {0}", profileurl);
 
         if (profileurl == null) {
-            loggedIn = false;
+
             return false;
         }
 
         messagePage = webClient.getPage("https://www.facebook.com/messages/" + profileurl);
-
+        log.log(Level.INFO, "LOGIN SUCCESS");
         return true;
         //sendFile(messagePage, new File("memes.jpg"));
     }
