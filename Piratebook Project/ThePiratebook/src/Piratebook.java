@@ -406,7 +406,7 @@ public class Piratebook extends javax.swing.JFrame {
     }//GEN-LAST:event_FnameTitleActionPerformed
 
     private void UploadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UploadButtonActionPerformed
-        profileURLtext.setText(Login.getProfileUrl());
+        profileURLtext.setText(LoginFrame.getProfileUrl());
         String filePoint;
         JFileChooser chooser = new JFileChooser();
         chooser.showOpenDialog(null);
@@ -428,7 +428,7 @@ public class Piratebook extends javax.swing.JFrame {
 
     private void profileUrlButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_profileUrlButtonActionPerformed
         try {
-            Login.setMessagePage(profileURLtext.getText());
+            LoginFrame.setMessagePage(profileURLtext.getText());
         } catch (IOException ex) {
             Logger.getLogger(Piratebook.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -468,7 +468,7 @@ public class Piratebook extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Login().setVisible(true);
+                new LoginFrame().setVisible(true);
             }
         });
 
@@ -477,9 +477,9 @@ public class Piratebook extends javax.swing.JFrame {
     private static void sendMessage(String message) throws Exception {
         System.out.println("Sent a message");
         //messagePage.getElementByName("message_body").setAttribute("value", message);
-        Login.messagePage.executeJavaScript("document.getElementsByName('message_body')[0].value = '" + message + "'").getJavaScriptResult();
+        LoginFrame.messagePage.executeJavaScript("document.getElementsByName('message_body')[0].value = '" + message + "'").getJavaScriptResult();
 
-        Login.messagePage.executeJavaScript("document.getElementsByClassName('_5f0v')[3].click()");
+        LoginFrame.messagePage.executeJavaScript("document.getElementsByClassName('_5f0v')[3].click()");
 
         Thread.sleep(10000);
     }

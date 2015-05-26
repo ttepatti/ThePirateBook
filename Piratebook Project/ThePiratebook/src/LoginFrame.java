@@ -21,7 +21,7 @@ import javax.swing.JOptionPane;
  *
  * @author Shane
  */
-public class Login extends javax.swing.JFrame {
+public class LoginFrame extends javax.swing.JFrame {
 
     private final String STOCK_PASSWORD = "Stock";
 
@@ -34,7 +34,7 @@ public class Login extends javax.swing.JFrame {
     /**
      * Creates new form PiratebookLogin
      */
-    public Login() {
+    public LoginFrame() {
         initComponents();
     }
 
