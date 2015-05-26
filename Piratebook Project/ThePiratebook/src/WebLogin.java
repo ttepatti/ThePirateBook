@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  */
 public class WebLogin implements Runnable {
 
-    private boolean loggedIn;
+    private boolean loggedIn = false;
     private boolean doneLoggingIn = false;
     private boolean sending = false;
 
@@ -28,75 +28,82 @@ public class WebLogin implements Runnable {
 
     private HtmlPage messagePage;
     private WebClient webClient;
-    private String profileUrl;
+    private String profileUrl = null;// Used for storing the user's profile URL
 
+    /**
+     * Create a new WebLogin to interface with Facebook website
+     *
+     * @param email The users email to login
+     * @param password The users password to login
+     */
     public WebLogin(String email, String password) {
         this.email = email;
         this.password = password;
     }
 
+    /**
+     * Run this WebLogin. This attempts to login to facebook using the constructed credentials.
+     * Boolean variables are set according to the success or failure of the attempt.
+     */
     @Override
     public void run() {
         Logger log = java.util.logging.Logger.getLogger("FacebookLogin");
 
-        /* turn off annoying htmlunit warnings */
+        //Turn off annoying htmlunit warnings
         java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(java.util.logging.Level.OFF);
         java.util.logging.Logger.getLogger("org.apache").setLevel(java.util.logging.Level.OFF);
 
-        profileUrl = null; // Used for storing the user's profile URL //
-        String filePart = "test"; // Used for storing the message that's sent //
-
-        // First we make a new webclient for doing all this crap
+        //First we make a new webclient for doing all this crap
         webClient = new WebClient(BrowserVersion.FIREFOX_31);
         webClient.getOptions().setThrowExceptionOnScriptError(false);
-        // webClient.getOptions().setTimeout(1000);
+        //webClient.getOptions().setTimeout(1000);
         log.log(Level.FINE, "WebClient Created");
 
-        // Grab the login page
+        //Grab the login page
         HtmlPage loginPage = null;
         try {
             loginPage = webClient.getPage("https://www.facebook.com/login.php");
+            log.log(Level.FINE, "login page got");
         } catch (IOException | FailingHttpStatusCodeException ex) {
             Logger.getLogger(WebLogin.class.getName()).log(Level.SEVERE, null, ex);
         }
-        log.log(Level.FINE, "login page got");
 
-        List<HtmlForm> loginForms; // Initialize an array to store login forms //
-        loginForms = loginPage.getForms(); /* This is a ghetto way of getting the login form, because HtmlUnit doesn't support grabbing by id */
+        List<HtmlForm> loginForms; //Initialize an array to store login forms
+        loginForms = loginPage.getForms(); //This is a ghetto way of getting the login form, because HtmlUnit doesn't support grabbing by id
 
         HtmlForm login = loginForms.get(0);
 
-        HtmlSubmitInput loginButton = login.getInputByName("login"); // Find the login button //
-        HtmlTextInput emailField = login.getInputByName("email"); // Get the field for submitting email //
-        HtmlPasswordInput passwordField = login.getInputByName("pass"); // Get the field for submitting password //
+        HtmlSubmitInput loginButton = login.getInputByName("login"); //Find the login button
+        HtmlTextInput emailField = login.getInputByName("email"); //Get the field for submitting email
+        HtmlPasswordInput passwordField = login.getInputByName("pass"); //Get the field for submitting password
 
-        // Set the values of the username and password //
+        //Set the values of the username and password
         emailField.setValueAttribute(this.email);
         passwordField.setValueAttribute(this.password);
 
-        // Now submit the form by clicking the button and get back the newsfeed. //
+        //Now submit the form by clicking the button and get back the newsfeed.
         HtmlPage newsfeed = null;
         try {
             newsfeed = loginButton.click();
+            log.log(Level.FINE, "loginButton.click()");
         } catch (IOException ex) {
             Logger.getLogger(WebLogin.class.getName()).log(Level.SEVERE, null, ex);
         }
-        log.log(Level.FINE, "loginButton.click()");
 
-        // Now we're going to grab the current user's profile URL to get their messages with themself
-        List<DomElement> links = newsfeed.getElementsByTagName("a");
-        for (DomElement element : links) {
-            if (element.getAttribute("class").equals("fbxWelcomeBoxName")) {
-                profileUrl = element.getAttribute("href");
+        //Now we're going to grab the current user's profile URL to get their messages with themself
+        try {
+            List<DomElement> links = newsfeed.getElementsByTagName("a");
+            for (DomElement element : links) {
+                if (element.getAttribute("class").equals("fbxWelcomeBoxName")) {
+                    profileUrl = element.getAttribute("href");
+                }
             }
-        }
 
-        try { //if profileUrl is null pointer, we have not logged in
-            profileUrl = profileUrl.replace("https://www.facebook.com/", "");
+            profileUrl = profileUrl.replace("https://www.facebook.com/", "");//Clean it up
             log.log(Level.INFO, "profileurl = {0}", profileUrl);
 
             messagePage = webClient.getPage("https://www.facebook.com/messages/" + profileUrl);
-        } catch (NullPointerException ex) {
+        } catch (NullPointerException ex) { //if profileUrl is null pointer, we have not logged in
             this.loggedIn = false;
             this.doneLoggingIn = true;
             return;
@@ -108,23 +115,43 @@ public class WebLogin implements Runnable {
         this.doneLoggingIn = true;
     }
 
-    private void sendMessage(String message) throws Exception {
+    /**
+     * Used to send one message to the facebook chat
+     *
+     * @param message The message to send
+     */
+    private void sendMessage(String message) {
         System.out.println("Sent a message");
-        //messagePage.getElementByName("message_body").setAttribute("value", message);
-        this.messagePage.executeJavaScript("document.getElementsByName('message_body')[0].value = '" + message + "'").getJavaScriptResult();
 
-        this.messagePage.executeJavaScript("document.getElementsByClassName('_5f0v')[3].click()");
+        this.messagePage.executeJavaScript("document.getElementsByName('message_body')[0].value = '" + message + "'").getJavaScriptResult(); //Set message text
+        this.messagePage.executeJavaScript("document.getElementsByClassName('_5f0v')[3].click()"); //Click send button
 
-        Thread.sleep(10000);
+        try {
+            Thread.sleep(10000); //Messages drop without
+        } catch (InterruptedException ex) {
+            Logger.getLogger(WebLogin.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
-    private void sendMessages(String[] messages) throws Exception {
+    /**
+     * Used to send multiple message at once to the facebook chat
+     *
+     * @param messages an array of messages to send
+     */
+    private void sendMessages(String[] messages) {
         for (String s : messages) {
             sendMessage(s);
         }
     }
 
-    public void sendFile(File file) throws Exception {
+    /**
+     * Send a file to the facebook chat. Automatically encodes to base64 and splits the message into the required pieces, sending multiple messages
+     *
+     * @param file The file to send to facebook chat
+     *
+     * @throws java.io.IOException
+     */
+    public void sendFile(File file) throws IOException {
         this.sending = true;
         String[] strings = base64Functions.encodeAndSplit.intoStrings(file);
 
@@ -135,19 +162,58 @@ public class WebLogin implements Runnable {
         this.sending = false;
     }
 
-    public void setMessagePage(String profileUrl) throws IOException {
-        messagePage = webClient.getPage("https://www.facebook.com/messages/" + profileUrl);
+    /**
+     * Set the page for messages. Used to change the chat that things are sent to.
+     * Fails if messages are being sent, since we dont want to randomly switch chats in the middle of a file.
+     *
+     * @param profileUrl the new url for the chat
+     *
+     * @return If it changed (didn't fail because we were sending)
+     *
+     * @throws IOException
+     */
+    public boolean setMessagePage(String profileUrl) throws IOException {
+        if (!sending) {
+            messagePage = webClient.getPage("https://www.facebook.com/messages/" + profileUrl);
+            return true;
+        } else {
+            return false;
+        }
     }
 
+    /**
+     * Get the current profile url that messages are sent to
+     *
+     * @return the current chat url
+     */
     public String getProfileUrl() {
         return profileUrl;
     }
 
+    /**
+     * Is the user successfully logged in?
+     *
+     * @return whether the login was completed successfully
+     */
     public boolean isLoggedIn() {
         return this.loggedIn;
     }
 
+    /**
+     * Are we currently logging in?
+     *
+     * @return whether the login is still being processed
+     */
     public boolean isLoggingIn() {
         return !this.doneLoggingIn;
+    }
+
+    /**
+     * Are we currently sending messages/files?
+     *
+     * @return whether data is being sent.
+     */
+    public boolean isSending() {
+        return this.sending;
     }
 }

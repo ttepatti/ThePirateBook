@@ -24,7 +24,10 @@ import net.lingala.zip4j.util.Zip4jConstants;
  */
 public class base64Functions {
 
-    public static final int SPLIT_SIZE = 20000; //The Facebook messenger character limit is 20,000
+    /**
+     * The size to split into. ie, the facebook messenger character limit
+     */
+    public static final int SPLIT_SIZE = 20000;
 
 //    /**
 //     * Class with all the base64 code to make things work
@@ -200,7 +203,7 @@ public class base64Functions {
     public static class encodeAndSplit {
 
         /**
-         * Take a file input and split it into base64 chunks of SPLIT_SIZE, then create text files of each split.
+         * Take a file input and split it into base64 chunks of {@link SPLIT_SIZE}, then create text files of each split.
          * The files have naming scheme "base64_%N%.txt"
          *
          * @param file The file to encode and split
@@ -223,7 +226,7 @@ public class base64Functions {
 
         /**
          *
-         * Take a file input and split it into base64 chunks of SPLIT_SIZE. Returns an array of byte arrays.
+         * Take a file input and split it into base64 chunks of {@link SPLIT_SIZE}. Returns an array of byte arrays.
          *
          * @param file The file to encode and split
          *
@@ -246,6 +249,15 @@ public class base64Functions {
             return splitBytes;
         }
 
+        /**
+         * Take a file and split it into strings of base64 chunks of {@link SPLIT_SIZE}
+         *
+         * @param file The flie to encode and split
+         *
+         * @return string array of base64
+         *
+         * @throws IOException
+         */
         public static String[] intoStrings(File file) throws IOException {
             return util.convertBytePiecesToStrings(fileIntoBytePieces(file));
         }

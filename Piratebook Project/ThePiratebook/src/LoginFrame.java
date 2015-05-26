@@ -205,11 +205,11 @@ public class LoginFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
-        webLogin = new WebLogin(emailbox.getText(), passbox.getText());
-        Thread webThread = new Thread(webLogin, "webThread");
-        webThread.start();
+        webLogin = new WebLogin(emailbox.getText(), passbox.getText()); //Create a new weblogin to connect to facebook
+        Thread webThread = new Thread(webLogin, "webThread"); //Make a thread so it can run independant of the GUI thread
+        webThread.start(); //Start the thread, attempting to login
 
-        while (webLogin.isLoggingIn()) {
+        while (webLogin.isLoggingIn()) { //Wait until the login is done (successful or not)
             try {
                 Thread.sleep(2000);
                 System.out.println("Still waiting for login...");
@@ -217,13 +217,13 @@ public class LoginFrame extends javax.swing.JFrame {
                 Logger.getLogger(LoginFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        if (webLogin.isLoggedIn()) {
+        if (webLogin.isLoggedIn()) { //Check if it was successful
             java.awt.EventQueue.invokeLater(new Runnable() {
                 public void run() {
-                    new Piratebook(webLogin).setVisible(true);
+                    new Piratebook(webLogin).setVisible(true); //Start the main GUI
                 }
             });
-            this.dispose();
+            this.dispose(); //Gotta save them rams
         } else {
             JOptionPane.showMessageDialog(this, "login bad.");
         }
