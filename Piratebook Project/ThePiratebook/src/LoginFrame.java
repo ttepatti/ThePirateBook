@@ -3,16 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import com.gargoylesoftware.htmlunit.BrowserVersion;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.DomElement;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
-import java.io.IOException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -23,16 +13,10 @@ import javax.swing.JOptionPane;
  */
 public class LoginFrame extends javax.swing.JFrame {
 
-    private final String STOCK_PASSWORD = "Stock";
-
-    public static boolean loggedIn;
-
-    public static HtmlPage messagePage;
-    private static WebClient webClient;
-    private static String profileUrl;
+    private WebLogin webLogin;
 
     /**
-     * Creates new form PiratebookLogin
+     * Creates new form PiratebookLogin to login to the cloudbook
      */
     public LoginFrame() {
         initComponents();
@@ -60,7 +44,6 @@ public class LoginFrame extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(63, 92, 148));
@@ -123,8 +106,6 @@ public class LoginFrame extends javax.swing.JFrame {
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Facebook Messenger File Sharing");
 
-        jLabel7.setText("Error: Incorrect Email or Password");
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -163,9 +144,7 @@ public class LoginFrame extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(209, 209, 209)
                         .addComponent(loginButton)
-                        .addGap(31, 31, 31)
-                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(10, 10, 10)))
+                        .addGap(205, 205, 205)))
                 .addGap(29, 29, 29))
         );
         jPanel2Layout.setVerticalGroup(
@@ -192,9 +171,7 @@ public class LoginFrame extends javax.swing.JFrame {
                     .addComponent(passbox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(loginButton)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(loginButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -228,90 +205,29 @@ public class LoginFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
+        webLogin = new WebLogin(emailbox.getText(), passbox.getText());
+        Thread webThread = new Thread(webLogin, "webThread");
+        webThread.start();
 
-        try {
-            loggedIn = login(emailbox.getText(), passbox.getText()); //todo indicate that stuff is happening
-            System.out.println(loggedIn);
-            checkLogin();
-            //loggedIn = true;
-        } catch (Exception ex) {
+        while (webLogin.isLoggingIn()) {
+            try {
+                Thread.sleep(2000);
+                System.out.println("Still waiting for login...");
+            } catch (InterruptedException ex) {
+                Logger.getLogger(LoginFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-    }//GEN-LAST:event_loginButtonActionPerformed
-
-    private void checkLogin() {
-        if (loggedIn) {
+        if (webLogin.isLoggedIn()) {
             java.awt.EventQueue.invokeLater(new Runnable() {
                 public void run() {
-                    new Piratebook().setVisible(true);
+                    new Piratebook(webLogin).setVisible(true);
                 }
             });
             this.dispose();
         } else {
             JOptionPane.showMessageDialog(this, "login bad.");
         }
-    }
-
-    //swage@cock.li
-    //password101
-    public static boolean login(String email, String pass) throws Exception {
-        Logger log = java.util.logging.Logger.getLogger("FacebookLogin");
-
-        /* turn off annoying htmlunit warnings */
-        java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(java.util.logging.Level.OFF);
-        java.util.logging.Logger.getLogger("org.apache").setLevel(java.util.logging.Level.OFF);
-
-        profileUrl = null; // Used for storing the user's profile URL //
-        String filePart = "test"; // Used for storing the message that's sent //
-
-        // First we make a new webclient for doing all this crap
-        webClient = new WebClient(BrowserVersion.FIREFOX_31);
-        webClient.getOptions().setThrowExceptionOnScriptError(false);
-        // webClient.getOptions().setTimeout(1000);
-        log.log(Level.FINE, "WebClient Created");
-
-        // Grab the login page
-        HtmlPage loginPage = webClient.getPage("https://www.facebook.com/login.php");
-        log.log(Level.FINE, "login page got");
-
-        List<HtmlForm> loginForms; // Initialize an array to store login forms //
-        loginForms = loginPage.getForms(); /* This is a ghetto way of getting the login form,
-         * because HtmlUnit doesn't support grabbing by id */
-
-        HtmlForm login = loginForms.get(0);
-
-        HtmlSubmitInput loginButton = login.getInputByName("login"); // Find the login button //
-        HtmlTextInput emailField = login.getInputByName("email"); // Get the field for submitting email //
-        HtmlPasswordInput passwordField = login.getInputByName("pass"); // Get the field for submitting password //
-
-        // Set the values of the username and password //
-        emailField.setValueAttribute(email);
-        passwordField.setValueAttribute(pass);
-
-        // Now submit the form by clicking the button and get back the newsfeed. //
-        HtmlPage newsfeed = loginButton.click();
-        log.log(Level.FINE, "loginButton.click()");
-
-        // Now we're going to grab the current user's profile URL to get their messages with themself
-        List<DomElement> links = newsfeed.getElementsByTagName("a");
-        for (DomElement element : links) {
-            if (element.getAttribute("class").equals("fbxWelcomeBoxName")) {
-                profileUrl = element.getAttribute("href");
-            }
-        }
-        profileUrl = profileUrl.replace("https://www.facebook.com/", "");
-        log.log(Level.INFO, "profileurl = {0}", profileUrl);
-        messagePage = webClient.getPage("https://www.facebook.com/messages/" + profileUrl);
-
-        return profileUrl != null;
-    }
-
-    public static void setMessagePage(String profileUrl) throws IOException {
-        messagePage = webClient.getPage("https://www.facebook.com/messages/" + profileUrl);
-    }
-
-    public static String getProfileUrl() {
-        return profileUrl;
-    }
+    }//GEN-LAST:event_loginButtonActionPerformed
 
     private void emailboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailboxActionPerformed
         // TODO add your handling code here:
@@ -337,7 +253,6 @@ public class LoginFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JSeparator jSeparator1;

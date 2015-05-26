@@ -17,11 +17,19 @@ import javax.swing.JOptionPane;
  */
 public class Piratebook extends javax.swing.JFrame {
 
+    public final WebLogin webLogin;
+
     /**
+     * Create a new Piratebook GUI. The WebLogin is used for interfacing with facebook
+     *
      * Creates new form Piratebook
+     *
+     * @param wl The WebLogin being used for this sessions connection with facebook
      */
-    public Piratebook() {
+    public Piratebook(WebLogin wl) {
         initComponents();
+        this.webLogin = wl;
+        profileURLtext.setText(webLogin.getProfileUrl());
     }
 
     /**
@@ -406,7 +414,6 @@ public class Piratebook extends javax.swing.JFrame {
     }//GEN-LAST:event_FnameTitleActionPerformed
 
     private void UploadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UploadButtonActionPerformed
-        profileURLtext.setText(LoginFrame.getProfileUrl());
         String filePoint;
         JFileChooser chooser = new JFileChooser();
         chooser.showOpenDialog(null);
@@ -415,7 +422,7 @@ public class Piratebook extends javax.swing.JFrame {
         testField.setText(filePoint);
 
         try {
-            sendFile(f);
+            this.webLogin.sendFile(f);
             JOptionPane.showMessageDialog(this, "Upload Finished");
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -428,13 +435,13 @@ public class Piratebook extends javax.swing.JFrame {
 
     private void profileUrlButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_profileUrlButtonActionPerformed
         try {
-            LoginFrame.setMessagePage(profileURLtext.getText());
+            webLogin.setMessagePage(profileURLtext.getText());
         } catch (IOException ex) {
             Logger.getLogger(Piratebook.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_profileUrlButtonActionPerformed
 
-    public void addUploader() {
+    public void addUpload() {
 
     }
 
@@ -471,30 +478,6 @@ public class Piratebook extends javax.swing.JFrame {
                 new LoginFrame().setVisible(true);
             }
         });
-
-    }
-
-    private static void sendMessage(String message) throws Exception {
-        System.out.println("Sent a message");
-        //messagePage.getElementByName("message_body").setAttribute("value", message);
-        LoginFrame.messagePage.executeJavaScript("document.getElementsByName('message_body')[0].value = '" + message + "'").getJavaScriptResult();
-
-        LoginFrame.messagePage.executeJavaScript("document.getElementsByClassName('_5f0v')[3].click()");
-
-        Thread.sleep(10000);
-    }
-
-    private static void sendMessages(String[] messages) throws Exception {
-        for (String s : messages) {
-            sendMessage(s);
-        }
-    }
-
-    private static void sendFile(File file) throws Exception {
-        String[] strings = base64Functions.encodeAndSplit.intoStrings(file);
-        sendMessage("BEGIN FILE " + file.getName() + " " + strings.length + " messages incoming");
-        sendMessages(strings);
-        sendMessage("END FILE " + file.getName());
 
     }
 
