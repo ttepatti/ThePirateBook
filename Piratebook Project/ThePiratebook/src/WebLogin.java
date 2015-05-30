@@ -120,7 +120,7 @@ public class WebLogin implements Runnable {
      *
      * @param message The message to send
      */
-    private void sendMessage(String message) {
+    public void sendMessage(String message) {
         System.out.println("Sent a message");
 
         this.messagePage.executeJavaScript("document.getElementsByName('message_body')[0].value = '" + message + "'").getJavaScriptResult(); //Set message text
@@ -150,7 +150,10 @@ public class WebLogin implements Runnable {
      * @param file The file to send to facebook chat
      *
      * @throws java.io.IOException
+     *
+     * @deprecated Use Uploadable.run() instead.
      */
+    @Deprecated
     public void sendFile(File file) throws IOException {
         this.sending = true;
         String[] strings = base64Functions.encodeAndSplit.intoStrings(file);
@@ -172,9 +175,13 @@ public class WebLogin implements Runnable {
      *
      * @throws IOException
      */
-    public boolean setMessagePage(String profileUrl) throws IOException {
+    public boolean setMessagePage(String profileUrl) {
         if (!sending) {
-            messagePage = webClient.getPage("https://www.facebook.com/messages/" + profileUrl);
+            try {
+                messagePage = webClient.getPage("https://www.facebook.com/messages/" + profileUrl);
+            } catch (IOException | FailingHttpStatusCodeException ex) {
+                Logger.getLogger(WebLogin.class.getName()).log(Level.SEVERE, null, ex);
+            }
             return true;
         } else {
             return false;
@@ -215,5 +222,12 @@ public class WebLogin implements Runnable {
      */
     public boolean isSending() {
         return this.sending;
+    }
+
+    /**
+     * @param b Sending or not
+     */
+    public void setSending(boolean b) {
+        this.sending = b;
     }
 }
