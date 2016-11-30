@@ -14,8 +14,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * This class is used for the actual web authentication for logging into Facebook
+ * 
  * @author Deliquescence <Deliquescence1@gmail.com>
+ * 		   Tim Tepatti <tim@tepatti.com>
  */
 public class WebLogin implements Runnable {
 
@@ -23,18 +25,18 @@ public class WebLogin implements Runnable {
     private boolean doneLoggingIn = false;
     private boolean sending = false;
 
-    private final String email;//swage@cock.li
-    private final String password;//password101
+    private final String email;
+    private final String password;
 
     private HtmlPage messagePage;
     private WebClient webClient;
-    private String profileUrl = null;// Used for storing the user's profile URL
+    private String profileUrl = null; // Used for storing the user's profile URL
 
     /**
-     * Create a new WebLogin to interface with Facebook website
+     * Create a new WebLogin to interface with Facebook
      *
-     * @param email The users email to login
-     * @param password The users password to login
+     * @param email 	The user's email
+     * @param password 	The user's password
      */
     public WebLogin(String email, String password) {
         this.email = email;
@@ -49,17 +51,17 @@ public class WebLogin implements Runnable {
     public void run() {
         Logger log = java.util.logging.Logger.getLogger("FacebookLogin");
 
-        //Turn off annoying htmlunit warnings
+        // Turn off annoying htmlunit warnings
         java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(java.util.logging.Level.OFF);
         java.util.logging.Logger.getLogger("org.apache").setLevel(java.util.logging.Level.OFF);
 
-        //First we make a new webclient for doing all this crap
+        // First we make a new webclient for doing all this crap
         webClient = new WebClient(BrowserVersion.FIREFOX_31);
         webClient.getOptions().setThrowExceptionOnScriptError(false);
-        //webClient.getOptions().setTimeout(1000);
+        // webClient.getOptions().setTimeout(1000);
         log.log(Level.FINE, "WebClient Created");
 
-        //Grab the login page
+        // Grab the login page
         HtmlPage loginPage = null;
         try {
             loginPage = webClient.getPage("https://www.facebook.com/login.php");
@@ -68,20 +70,20 @@ public class WebLogin implements Runnable {
             Logger.getLogger(WebLogin.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        List<HtmlForm> loginForms; //Initialize an array to store login forms
-        loginForms = loginPage.getForms(); //This is a ghetto way of getting the login form, because HtmlUnit doesn't support grabbing by id
+        List<HtmlForm> loginForms; // Initialize an array to store login forms
+        loginForms = loginPage.getForms(); // This is a ghetto way of getting the login form, because HtmlUnit doesn't support grabbing by id
 
         HtmlForm login = loginForms.get(0);
 
-        HtmlSubmitInput loginButton = login.getInputByName("login"); //Find the login button
-        HtmlTextInput emailField = login.getInputByName("email"); //Get the field for submitting email
-        HtmlPasswordInput passwordField = login.getInputByName("pass"); //Get the field for submitting password
+        HtmlSubmitInput loginButton = login.getInputByName("login"); // Find the login button
+        HtmlTextInput emailField = login.getInputByName("email"); // Get the field for submitting email
+        HtmlPasswordInput passwordField = login.getInputByName("pass"); // Get the field for submitting password
 
-        //Set the values of the username and password
+        // Set the values of the username and password
         emailField.setValueAttribute(this.email);
         passwordField.setValueAttribute(this.password);
 
-        //Now submit the form by clicking the button and get back the newsfeed.
+        // Now submit the form by clicking the login button and return to the newsfeed
         HtmlPage newsfeed = null;
         try {
             newsfeed = loginButton.click();
@@ -90,7 +92,7 @@ public class WebLogin implements Runnable {
             Logger.getLogger(WebLogin.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        //Now we're going to grab the current user's profile URL to get their messages with themself
+        // Now we're going to grab the current user's profile URL to fetch messages sent to themselves
         try {
             List<DomElement> links = newsfeed.getElementsByTagName("a");
             for (DomElement element : links) {
@@ -99,11 +101,11 @@ public class WebLogin implements Runnable {
                 }
             }
 
-            profileUrl = profileUrl.replace("https://www.facebook.com/", "");//Clean it up
+            profileUrl = profileUrl.replace("https://www.facebook.com/", ""); // Clean up profile URL
             log.log(Level.INFO, "profileurl = {0}", profileUrl);
 
             messagePage = webClient.getPage("https://www.facebook.com/messages/" + profileUrl);
-        } catch (NullPointerException ex) { //if profileUrl is null pointer, we have not logged in
+        } catch (NullPointerException ex) { // if profileUrl is null pointer, we have not logged in
             this.loggedIn = false;
             this.doneLoggingIn = true;
             return;
@@ -124,10 +126,10 @@ public class WebLogin implements Runnable {
         System.out.println("Sent a message");
 
         this.messagePage.executeJavaScript("document.getElementsByName('message_body')[0].value = '" + message + "'").getJavaScriptResult(); //Set message text
-        this.messagePage.executeJavaScript("document.getElementsByClassName('_5f0v')[3].click()"); //Click send button
+        this.messagePage.executeJavaScript("document.getElementsByClassName('_5f0v')[3].click()"); // Click send button
 
         try {
-            Thread.sleep(10000); //Messages drop without
+            Thread.sleep(10000); // Messages drop if we dont sleep
         } catch (InterruptedException ex) {
             Logger.getLogger(WebLogin.class.getName()).log(Level.SEVERE, null, ex);
         }
